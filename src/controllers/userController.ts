@@ -2,7 +2,7 @@ import { User, Thought } from '../models';
 import { Request, Response } from 'express';
 
 // All users
-export const getUsers = async (_req: Request, res: Response): Promise<void> => {
+export const getUsers = async (_req: Request, res: Response) => {
   try {
     const users = await User.find().select('-__v');
     res.json(users);
@@ -12,7 +12,7 @@ export const getUsers = async (_req: Request, res: Response): Promise<void> => {
 };
 
 // Single user by ID
-export const getSingleUser = async (req: Request, res: Response): Promise<void> => {
+export const getSingleUser = async (req: Request, res: Response) => {
   try {
     const user = await User.findOne({ _id: req.params.userId })
       .select('-__v')
@@ -31,7 +31,7 @@ export const getSingleUser = async (req: Request, res: Response): Promise<void> 
 };
 
 // New user
-export const createUser = async (req: Request, res: Response): Promise<void> => {
+export const createUser = async (req: Request, res: Response) => {
   try {
     const dbUserData = await User.create(req.body);
     res.json(dbUserData);
@@ -41,7 +41,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
 };
 
 // Update existing user
-export const updateUser = async (req: Request, res: Response): Promise<void> => {
+export const updateUser = async (req: Request, res: Response) => {
   try {
     const dbUserData = await User.findOneAndUpdate(
       { _id: req.params.userId },
@@ -59,7 +59,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 };
 
 // Delete a user
-export const deleteUser = async (req: Request, res: Response): Promise<void> => {
+export const deleteUser = async (req: Request, res: Response) => {
   try {
     const dbUserData = await User.findOneAndDelete({ _id: req.params.userId });
     if (!dbUserData) {
@@ -77,7 +77,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
 };
 
 // Add a friend to friend list
-export const addFriend = async (req: Request, res: Response): Promise<void> => {
+export const addFriend = async (req: Request, res: Response) => {
   try {
     const dbUserData = await User.findOneAndUpdate(
       { _id: req.params.userId },
@@ -94,7 +94,7 @@ export const addFriend = async (req: Request, res: Response): Promise<void> => {
 };
 
 // Remove a friend from friend list
-export const removeFriend = async (req: Request, res: Response): Promise<void> => {
+export const removeFriend = async (req: Request, res: Response) => {
   try {
     const dbUserData = await User.findOneAndUpdate(
       { _id: req.params.userId },
