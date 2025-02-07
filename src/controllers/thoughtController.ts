@@ -1,8 +1,10 @@
-import { Thought, User } from "../models";
+import Thought from "../models/Thought.js";
+import User from "../models/User.js";
 import { Request, Response } from "express";
 
+
 // Get all thoughts
-export const getThoughts = async (req: Request, res: Response) => {
+export const getThoughts = async (_req: Request, res: Response) => {
   try {
     const thoughts = await Thought.find().sort({ createdAt: -1 });
     res.json(thoughts);

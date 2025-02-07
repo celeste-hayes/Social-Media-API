@@ -1,17 +1,20 @@
 import express from 'express';
-import routes from './routes/index.js';
 import db from './config/connection.js';
-
-await db();
+import routes from './routes/api/index.js';
 
 const PORT = process.env.PORT || 3001;
 const app = express();
 
-app.use(express.urlencoded({ extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use('/api', routes);
 
-app.use(routes);
-
-app.listen(PORT, () => {
-  console.log(`API Server running on port ${PORT}!`);
+db().then((connection) => {
+    connection.once('open', () => {
+        app.listen(PORT, () => {
+            console.log(`API server running on port ${PORT}!`);
+        });
+    });
+}).catch((err) => {
+    console.error('Failed to connect to the database', err);
 });
