@@ -1,38 +1,32 @@
-import { Schema, Types, model } from 'mongoose';
+import Mongoose from 'mongoose';
+import { Schema, Document, ObjectId } from 'mongoose';   
 
-const dateFormat = (timestamp: Date) => {
-  return timestamp.toLocaleString();
-};
+interface IReaction extends Document {
+    reactionId: ObjectId;
+    reactionBody: string;
+    username: string;
+    createdAt: Date;
+}
 
-const reactionSchema = new Schema(
-  {
+const reactionSchema: Schema<IReaction> = new Mongoose.Schema({
     reactionId: {
-      type: Schema.Types.ObjectId,
-      default: () => new Types.ObjectId(),
+        type: Mongoose.Schema.Types.ObjectId,
+        default: () => new Mongoose.Types.ObjectId(),
     },
     reactionBody: {
-      type: String,
-      required: true,
-      maxlength: 280,
+        type: String,
+        required: true,
+        maxlength: 280,
     },
     username: {
-      type: String,
-      required: true,
+        type: String,
+        required: true,
     },
     createdAt: {
-      type: Date,
-      default: Date.now,
-      get: (timestamp: Date) => dateFormat(timestamp),
+        type: Date,
+        default: Date.now,
+        get: (timestamp: Date) => new Date(timestamp),
     },
-  },
-  {
-    toJSON: {
-      getters: true,
-    },
-    id: false, 
-  }
-);
+});
 
-const Reaction = model('Reaction', reactionSchema);
-
-export default Reaction;
+export default reactionSchema;

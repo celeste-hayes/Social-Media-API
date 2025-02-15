@@ -1,6 +1,14 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Document, ObjectId } from 'mongoose';
 
-const userSchema = new Schema(
+interface IUser extends Document {
+  username: string;
+  email: string;
+  applications: string[];
+  thoughts: string[];
+  friends: ObjectId[];
+}
+
+const userSchema = new Schema<IUser>(
   {
     username: {
       type: String,
@@ -12,20 +20,16 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
-      match: [/.+@.+\..+/, "Must match an email address!"],
+      match: /.+\@.+\..+/,
     },
-    thoughts: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Thought",
-      },
-    ],
-    friends: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
+    thoughts: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Thought'
+  }],
+  friends: [{
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+  }]
   },
   {
     toJSON: {
@@ -35,10 +39,20 @@ const userSchema = new Schema(
   }
 );
 
-userSchema.virtual("friendCount").get(function () {
+
+userSchema.virtual('friendCount').get(function() {
   return this.friends.length;
 });
 
-const User = model("User", userSchema);
+userSchema.set('toJSON', {
+  virtuals: true
+});
+userSchema.set('toObject', {
+  virtuals: true
+});
+
+
+
+const User = model('user', userSchema);
 
 export default User;
