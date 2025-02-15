@@ -1,20 +1,13 @@
-import { Schema, model, Document } from 'mongoose';
-import reactionSchema from './Reaction.js';
+import { Schema, model } from 'mongoose';
+import Reaction from './Reaction.js';
 
-interface IThought extends Document {
-  thoughtText: string;
-  createdAt: Date;
-  username: string;
-  reactions: string[];
-}
-
-const thoughtSchema = new Schema<IThought>(
+const thoughtSchema = new Schema(
     {
         thoughtText: {
             type: String,
             required: true,
-            minlength: 1,
-            maxlength: 280,
+            minLength: 1,
+            maxLength: 280
         },
         createdAt: {
             type: Date,
@@ -22,23 +15,25 @@ const thoughtSchema = new Schema<IThought>(
         },
         username: {
             type: String,
-            required: true,
+            required: true
         },
-        reactions: [
-            reactionSchema,
-        ],
+        reactions: [Reaction]
+    },
+    {
+        toJSON: {
+            virtuals: true,
+            getters: true
+        },
+        id: false
     }
 );
 
-thoughtSchema.virtual('reactionCount').get(function() {
-    return this.reactions.length;
-});
-thoughtSchema.set('toJSON', {
-    virtuals: true,
-});
-thoughtSchema.set('toObject', {
-    virtuals: true,
-});
+thoughtSchema
+    .virtual('reactionCount')
+    .get(function() {
+        return this.reactions.length;
+    });
 
-const Thought = model<IThought>('Thought', thoughtSchema);
+const Thought = model('Thought', thoughtSchema);
+
 export default Thought;
