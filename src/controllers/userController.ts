@@ -46,7 +46,7 @@ export const updateUser = async (req: Request, res: Response) => {
     const dbUserData = await User.findOneAndUpdate(
       { _id: req.params.userId },
       { $set: req.body },
-      { runValidators: true, new: true }
+      { new: true }
     );
     if (!dbUserData) {
       res.status(404).json({ message: 'No user with this ID' });
@@ -62,16 +62,29 @@ export const updateUser = async (req: Request, res: Response) => {
 export const deleteUser = async (req: Request, res: Response) => {
   try {
     const dbUserData = await User.findOneAndDelete({ _id: req.params.userId });
+
     if (!dbUserData) {
-      res.status(404).json({ message: 'No user with this ID' });
+      return res.status(404).json({ message: 'No user with this ID' });
     }
 
-    if (dbUserData) {
-      // Delete associated thoughts
-      await Thought.deleteMany({ _id: { $in: dbUserData.thoughts } });
+    // Delete associated thoughts
+    await Thought.deleteMany({ _id: { $in: dbUserData.thoughts } });
+
+    // Remove user from others friends lists
+    await User.updateMany(
+      { friends: req.params.userId },
+      { $pull: { friends: req.params.userId } }
+    );
+
+    // Ensure user is deleted
+    const deletedUser = await User.findById(req.params.userId);
+    if (deletedUser) {
+      console.log("User was not deleted:", deletedUser);
+      return res.status(500).json({ message: 'User deletion failed' });
     }
     res.json({ message: 'User and associated thoughts deleted!' });
   } catch (err) {
+    console.error("Delete user error:", err);
     res.status(500).json(err);
   }
 };
@@ -86,6 +99,7 @@ export const addFriend = async (req: Request, res: Response) => {
     );
     if (!dbUserData) {
       res.status(404).json({ message: 'No user with this ID' });
+      return;
     }
     res.json(dbUserData);
   } catch (err) {
@@ -103,10 +117,12 @@ export const removeFriend = async (req: Request, res: Response) => {
     );
     if (!dbUserData) {
       res.status(404).json({ message: 'No user with this ID' });
+      return;
     }
     res.json(dbUserData);
   } catch (err) {
     res.status(500).json(err);
   }
 };
+
 
