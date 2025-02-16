@@ -26,11 +26,11 @@ Watch the full API walkthrough video [here](https://drive.google.com/file/d/1ESD
 ![image](Assets/Update_UserAfterUpdate.png)
 ![image](Assets/Delete_User.png)
 ### Thoughts
-![image](Assets/Delete_User.png)
-![image](Assets/Delete_User.png)
-![image](Assets/Delete_User.png)
-![image](Assets/Delete_User.png)
-![image](Assets/Delete_User.png)
+![image](Assets/Thoughts_GetAllThoughts.png)
+![image](Assets/Thoughts_FindThoughtByID.png)
+![image](Assets/Thoughts_CreateThought.png)
+![image](Assets/Thoughts_UpdateThoughtByID.png)
+![image](Assets/Thoughts_RemoveThought.png)
 ### Reactions
 ![image](Assets/Reaction_CreateReaction.png)
 ![image](Assets/Reaction_DeleteReaction.png)
