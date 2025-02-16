@@ -59,7 +59,7 @@ export const updateUser = async (req: Request, res: Response) => {
 };
 
 // Delete a user
-export const deleteUser = async (req: Request, res: Response) => {
+export const deleteUser = async (req: Request, res: Response): Promise<Response | void> => {
   try {
     const dbUserData = await User.findOneAndDelete({ _id: req.params.userId });
 
@@ -70,7 +70,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     // Delete associated thoughts
     await Thought.deleteMany({ _id: { $in: dbUserData.thoughts } });
 
-    // Remove user from others friends lists
+    // Remove user from others friend lists
     await User.updateMany(
       { friends: req.params.userId },
       { $pull: { friends: req.params.userId } }
@@ -82,10 +82,11 @@ export const deleteUser = async (req: Request, res: Response) => {
       console.log("User was not deleted:", deletedUser);
       return res.status(500).json({ message: 'User deletion failed' });
     }
-    res.json({ message: 'User and associated thoughts deleted!' });
+
+    return res.json({ message: 'User and associated thoughts deleted!' });
   } catch (err) {
     console.error("Delete user error:", err);
-    res.status(500).json(err);
+    return res.status(500).json(err);
   }
 };
 
